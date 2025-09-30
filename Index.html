@@ -5,120 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recurso Educativo UNAD</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Fuente moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Iconos -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <header>
-        <h1>Bienvenidos a la UNAD</h1>
+        <h1><i class="fas fa-graduation-cap"></i> Bienvenidos a la UNAD</h1>
         <nav>
             <ul>
                 <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#servicios">Servicios Académicos</a></li>
-                <li><a href="#soporte">Soporte y Recursos</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#soporte">Soporte</a></li>
                 <li><a href="#normatividad">Normatividad</a></li>
                 <li><a href="#vida">Vida Universitaria</a></li>
             </ul>
         </nav>
     </header>
     
+    <!-- Banner principal -->
+    <section class="banner">
+        <img src="imagenes/banner1.jpg" alt="Educación Virtual">
+        <h2>Aprender sin límites</h2>
+    </section>
+
     <section id="inicio">
-        <h2>Bienvenida</h2>
+        <h2><i class="fas fa-home"></i> Bienvenida</h2>
         <p>La UNAD ofrece educación virtual de calidad con acceso a recursos académicos y soporte institucional.</p>
-        <img src="imagenes/Bienvenida1.png"  >
+        <img src="imagenes/Bienvenida1.png" alt="Bienvenida UNAD">
     </section>
 
     <section id="servicios">
-        <h2>Servicios Académicos</h2>
+        <h2><i class="fas fa-cogs"></i> Servicios Académicos</h2>
         <div class="subseccion">
-            <h3>Registro e Inscripción</h3>
-            <p class="hidden">Accede a la plataforma oficial de la UNAD y sigue los pasos para tu inscripción.  </p>
-            <p>Pagina de inscripciones y matrículas: En esta página  oficial de la UNAD encontrarás información 
-                 detallada sobre el proceso de inscripción y matrícula, que puede servir como referencia
-            </p>
-            <a href="https://estudios.unad.edu.co/inscripciones-y-matriculas?utm">enlace </a>
+            <h3><i class="fas fa-user-edit"></i> Registro e Inscripción</h3>
+            <p class="hidden">Accede a la plataforma oficial de la UNAD y sigue los pasos para tu inscripción.</p>
+            <p>Página oficial de inscripciones y matrículas:</p>
+            <a href="https://estudios.unad.edu.co/inscripciones-y-matriculas?utm" class="btn">Ir al portal</a>
             <img src="imagenes/Inscripciones y matriculas.jpg" alt="Registro e Inscripción">
         </div>
         <div class="subseccion">
-            <h3>Uso de Plataformas Virtuales</h3>
-            <p class="hidden">Explora las herramientas digitales como el campus virtual y aulas interactivas.</p>
+            <h3><i class="fas fa-laptop"></i> Uso de Plataformas Virtuales</h3>
+            <p class="hidden">Explora herramientas digitales como el campus virtual y aulas interactivas.</p>
             <video controls class="hidden">
                 <source src="videos/¿Cómo navegar en el aula_ UNAD-ECJP.mp4" type="video/mp4">
                 Tu navegador no soporta el elemento de video.
-
             </video>
         </div>
     </section>
 
     <section id="soporte">
-        <h2>Soporte y Recursos</h2>
+        <h2><i class="fas fa-life-ring"></i> Soporte y Recursos</h2>
         <div class="subseccion">
-            <h3>Biblioteca Virtual</h3>
+            <h3><i class="fas fa-book-reader"></i> Biblioteca Virtual</h3>
             <p class="hidden">Consulta libros y artículos académicos en la biblioteca digital.</p>
-            <p class="hidden"> La página oficial de la biblioteca virtual 
-                de la UNAD ofrece acceso a bases de datos, catálogos en línea y otros recursos académicos.
-                </p>
-                <a href="https://biblioteca.unad.edu.co/">enlace </a>
-
+            <a href="https://biblioteca.unad.edu.co/" class="btn">Acceder a la Biblioteca</a>
             <img src="imagenes/biblioteca.jpg" alt="Biblioteca Virtual">
-
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/UE8q0vUxRQo?si=O1OZTvnPt_dabV2q" 
-            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
-            gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-             
+            <iframe class="hidden" width="560" height="315" src="https://www.youtube.com/embed/UE8q0vUxRQo?si=O1OZTvnPt_dabV2q" 
+            title="Biblioteca Virtual UNAD" frameborder="0" allowfullscreen></iframe>
         </div>
         <div class="subseccion">
-            <h3>Asesoría Académica</h3>
+            <h3><i class="fas fa-chalkboard-teacher"></i> Asesoría Académica</h3>
             <p class="hidden">Solicita ayuda de tutores y asesores en línea para resolver dudas académicas.</p>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/NLzrwuCjjR0?si=bIpC5bGVdk_44DUd"
-             title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; 
-            web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <iframe class="hidden" width="560" height="315" src="https://www.youtube.com/embed/NLzrwuCjjR0?si=bIpC5bGVdk_44DUd"
+             title="Asesoría Académica UNAD" frameborder="0" allowfullscreen></iframe>
         </div>
     </section>
 
     <section id="normatividad">
-        <h2>Normatividad y Reglamentos</h2>
+        <h2><i class="fas fa-balance-scale"></i> Normatividad y Reglamentos</h2>
         <div class="subseccion">
-            <h3>Derechos y Deberes</h3>
+            <h3><i class="fas fa-file-contract"></i> Derechos y Deberes</h3>
             <p class="hidden">Conoce tus responsabilidades y derechos como estudiante de la UNAD.</p>
-            <p>
-                Este PDF detalla los derechos y deberes de los estudiantes de la UNAD.
-            </p>
-            <a href="https://sig.unad.edu.co/images/2024/consolidado_balance_2023%20V-01_compressed.pdf?utm">enlace</a>
+            <a href="https://sig.unad.edu.co/images/2024/consolidado_balance_2023%20V-01_compressed.pdf?utm" class="btn">Ver Documento</a>
         </div>
         <div class="subseccion">
-            <h3>Políticas de Evaluación</h3>   
-            <p class="hidden">Infórmate sobre las normativas de exámenes y calificaciones.
-                Políticas de Evaluación
-                </p>
-<p>evaluaciones en la UNAD incluyen:
-    📌 Exámenes Parciales y Finales: Se realizan en el Campus Virtual.
-    📌 Actividades Prácticas: Incluyen trabajos escritos, presentaciones y foros.
-    📌 Participación en Foros: Se valora la interacción con compañeros y tutores.</p> 
-            
-
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/zWnDmGKc1r4?si=WM-WZBzV57OoIyOK" 
-            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+            <h3><i class="fas fa-clipboard-check"></i> Políticas de Evaluación</h3>
+            <p class="hidden">Infórmate sobre las normativas de exámenes y calificaciones.</p>
+            <iframe class="hidden" width="560" height="315" src="https://www.youtube.com/embed/zWnDmGKc1r4?si=WM-WZBzV57OoIyOK" 
+            title="Políticas de Evaluación" frameborder="0" allowfullscreen></iframe>
         </div>
     </section>
 
     <section id="vida">
-        <h2>Vida Universitaria</h2>
+        <h2><i class="fas fa-users"></i> Vida Universitaria</h2>
         <div class="subseccion">
-            <h3>Eventos y Actividades</h3>
+            <h3><i class="fas fa-calendar-alt"></i> Eventos y Actividades</h3>
             <p class="hidden">Participa en seminarios, ferias académicas y encuentros virtuales.</p>
-            <p>La Universidad Nacional Abierta y a Distancia (UNAD) ofrece una variedad de eventos y actividades dirigidos a su comunidad académica.
-                 A continuación, se destacan algunos de los próximos eventos programados:
-                 <a href="https://www.unad.edu.co/?utm">enlace</a> 
+            <a href="https://www.unad.edu.co/?utm" class="btn">Ver Eventos</a>
         </div>
        
         <div class="subseccion">
-            <h3>Grupos y Comunidades</h3>
+            <h3><i class="fas fa-user-friends"></i> Grupos y Comunidades</h3>
             <p class="hidden">Únete a semilleros de investigación y clubes estudiantiles.</p>
-            <p>La UNAD cuenta con una amplia gama de grupos y comunidades académicas La comunidad de la UNAD 
-                en Facebook es un lugar donde los estudiantes pueden unirse a grupos y participar en comunidades estudiantiles.</p>
-            <a href="https://www.facebook.com/UniversidadUNAD/?locale=es_LA&utm">enlace</a>  
-
+            <a href="https://www.facebook.com/UniversidadUNAD/?locale=es_LA&utm" class="btn">Unirme</a>
         </div>
     </section>
     
@@ -129,3 +110,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
