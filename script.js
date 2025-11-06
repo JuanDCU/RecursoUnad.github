@@ -100,6 +100,36 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', updateActiveLink);
   updateActiveLink(); // Inicializa el estado
 
+  // TuRutaUNAD - script.js (Fragmento a AÑADIR/FUSIONAR)
+
+// --- 9. Animación de Revelación al Scroll (Scroll Reveal) ---
+const sectionsToAnimate = document.querySelectorAll('main section');
+// El "trigger point" (punto de activación) para la animación. 
+// Usaremos el 80% de la altura de la ventana (viewport).
+const revealPoint = window.innerHeight * 0.8; 
+
+function checkSectionVisibility() {
+    sectionsToAnimate.forEach(section => {
+        // Distancia del borde superior de la sección al borde superior del viewport
+        const sectionTop = section.getBoundingClientRect().top;
+
+        if (sectionTop < revealPoint) {
+            // Si la parte superior de la sección está por encima del punto de activación,
+            // la marcamos como visible para que se active la animación CSS.
+            section.classList.add('is-revealed');
+        } 
+        // No quitamos la clase, ya que la animación solo debe ocurrir una vez.
+    });
+}
+
+// Inicializar y vincular al evento scroll
+window.addEventListener('scroll', checkSectionVisibility);
+
+// Ejecutar al cargar la página para que las secciones iniciales se animen
+checkSectionVisibility(); 
+
+console.info('TuRutaUNAD: interactividad, búsqueda y animaciones listas.');
   
   
 });
+
