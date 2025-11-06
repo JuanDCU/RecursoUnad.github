@@ -153,5 +153,33 @@
   border-radius: 8px;
   height: auto;
 }
+/* TuRutaUNAD - styles.css (Añadir al final) */
+
+/* --- 5. Animación de Revelación de Secciones (Scroll Reveal) --- */
+
+/* Estado inicial: Oculto y Ligeramente Abajo */
+main section {
+    opacity: 0;
+    transform: translateY(30px); /* Ligeramente desplazado hacia abajo */
+    transition: 
+        opacity 0.6s ease-out, 
+        transform 0.6s ease-out; /* Transición suave para ambos */
+    transition-delay: 0.1s; /* Un pequeño retraso para un efecto más natural */
+}
+
+/* Estado de revelación: Visible y en posición normal */
+main section.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* El Hero (sección #inicio) ya debería ser visible al cargar, 
+   así que podemos asegurarnos de que no tenga el estado inicial de animación. */
+#inicio {
+    opacity: 1;
+    transform: translateY(0);
+    /* Sobrescribe la animación de entrada si no la deseas en la primera sección */
+    transition: none;
+}
 
 
