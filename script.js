@@ -1,135 +1,119 @@
-// TuRutaUNAD - script.js
+// TuRutaUNAD - script.js (Consolidado)
 document.addEventListener('DOMContentLoaded', () => {
   
-  // Obtenemos la altura del encabezado para el desplazamiento suave
+  // 1. Configuración de cabecera y variables globales
   const siteHeader = document.querySelector('.site-header');
-  // Usar 70px como fallback si el header no existe (pero debería)
-  const headerHeight = siteHeader ? siteHeader.offsetHeight + 10 : 70; 
+  const headerHeight = siteHeader ? siteHeader.offsetHeight : 70;
 
-  // --- 1. Funcionalidad de Toggles (Sub-secciones colapsables) ---
+  // --- 2. Funcionalidad de Acordeón (Toggles) ---
   const toggles = document.querySelectorAll('.sub-toggle');
+  
   toggles.forEach(btn => {
     btn.addEventListener('click', () => {
-      // CLAVE: El contenido a mostrar DEBE ser el elemento hermano inmediato
-      const content = btn.nextElementSibling; 
-      if (!content) return; // Si no encuentra el elemento, se detiene
-      
+      const content = btn.nextElementSibling;
+      if (!content) return;
+
       const isHidden = content.classList.contains('hidden');
-      content.classList.toggle('hidden');
       
-      btn.setAttribute('aria-expanded', String(isHidden));
-      const ind = btn.querySelector('.toggle-indicator');
-      
-      // Actualiza el texto del indicador (+ o −)
-      if (ind) ind.textContent = isHidden ? '−' : '+'; 
-      
-      content.setAttribute('aria-hidden', String(!isHidden ? 'true' : 'false'));
-    });
-    
-    btn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault(); 
-        btn.click();
+      // Cerrar otros (Opcional - para comportamiento de acordeón estricto, descomentar la siguiente línea)
+      // document.querySelectorAll('.sub-content').forEach(el => el.classList.add('hidden'));
+
+      // Abrir/Cerrar el actual
+      if (isHidden) {
+        content.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        const ind = btn.querySelector('.toggle-indicator');
+        if(ind) ind.textContent = '−';
+      } else {
+        content.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        const ind = btn.querySelector('.toggle-indicator');
+        if(ind) ind.textContent = '+';
       }
     });
   });
 
-  // --- 2. Funcionalidad de Formulario Simulada ---
+  // --- 3. Simulación de Formulario de Matrícula ---
   const form = document.getElementById('mat-form');
-  const resetBtn = document.getElementById('form-reset');
+  
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      
+      // Obtención segura de valores
       const nombre = document.getElementById('f-nombre').value.trim();
       const correo = document.getElementById('f-correo').value.trim();
       const programa = document.getElementById('f-programa').value.trim();
-      const semestre = document.getElementById('f-semestre').value.trim();
+      const semestre = document.getElementById('f-semestre').value;
       
       if (!nombre || !correo || !programa || !semestre) {
-        alert('Por favor completa todos los campos requeridos.');
+        alert('Por favor complete todos los campos obligatorios.');
         return;
       }
+
+      // Mensaje de simulación
+      const mensaje = `
+        -----------------------------------
+        SIMULACIÓN DE MATRÍCULA EXITOSA
+        -----------------------------------
+        Estudiante: ${nombre}
+        Programa: ${programa}
+        Créditos: ${semestre}
+        
+        Notificación enviada a: ${correo}
+        
+        *Esto es solo una simulación educativa.*
+      `;
       
-      const resumen = `Solicitud simulada de matrícula\n\nNombre: ${nombre}\nCorreo: ${correo}\nPrograma: ${programa}\nSemestre: ${semestre}\n\nGuarda una captura de esta pantalla como evidencia.`;
-      alert(resumen);
+      alert(mensaje);
       form.reset();
     });
-    resetBtn.addEventListener('click', () => form.reset());
+
+    const resetBtn = document.getElementById('form-reset');
+    if(resetBtn) resetBtn.addEventListener('click', () => form.reset());
   }
 
-  // --- 3. Desplazamiento Suave (Smooth Scroll) y Estado Activo ---
-  
-  // Smooth Scroll para enlaces de navegación
+  // --- 4. Navegación Suave (Smooth Scroll) ---
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-      if (this.closest('.main-nav')) {
+      // Solo actuar si el enlace es interno
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
         e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - headerHeight, 
-            behavior: 'smooth'
-          });
-        }
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 10;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
       }
     });
   });
 
-  // Resaltar Sección Activa (Active State)
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.main-nav a');
-
-  function updateActiveLink() {
-    let current = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (window.scrollY >= sectionTop - headerHeight) {
-        current = section.getAttribute('id');
-      }
-    });
-
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === `#${current}`) {
-        link.classList.add('active');
-      }
-    });
-  }
-
-  window.addEventListener('scroll', updateActiveLink);
-  updateActiveLink(); // Inicializa el estado
-
-  // TuRutaUNAD - script.js (Fragmento a AÑADIR/FUSIONAR)
-
-// --- 9. Animación de Revelación al Scroll (Scroll Reveal) ---
-const sectionsToAnimate = document.querySelectorAll('main section');
-// El "trigger point" (punto de activación) para la animación. 
-// Usaremos el 80% de la altura de la ventana (viewport).
-const revealPoint = window.innerHeight * 0.8; 
-
-function checkSectionVisibility() {
+  // --- 5. Animación "Scroll Reveal" (Requisito de Impacto) ---
+  const sectionsToAnimate = document.querySelectorAll('main section');
+  
+  const checkVisibility = () => {
+    const triggerBottom = window.innerHeight * 0.85; // Punto de activación
+    
     sectionsToAnimate.forEach(section => {
-        // Distancia del borde superior de la sección al borde superior del viewport
-        const sectionTop = section.getBoundingClientRect().top;
-
-        if (sectionTop < revealPoint) {
-            // Si la parte superior de la sección está por encima del punto de activación,
-            // la marcamos como visible para que se active la animación CSS.
-            section.classList.add('is-revealed');
-        } 
-        // No quitamos la clase, ya que la animación solo debe ocurrir una vez.
+      const sectionTop = section.getBoundingClientRect().top;
+      
+      // Si la sección entra en el viewport
+      if (sectionTop < triggerBottom) {
+        section.classList.add('is-revealed');
+      }
     });
-}
+  };
 
-// Inicializar y vincular al evento scroll
-window.addEventListener('scroll', checkSectionVisibility);
+  // Escuchar el evento scroll
+  window.addEventListener('scroll', checkVisibility);
+  // Chequeo inicial
+  checkVisibility();
 
-// Ejecutar al cargar la página para que las secciones iniciales se animen
-checkSectionVisibility(); 
-
-console.info('TuRutaUNAD: interactividad, búsqueda y animaciones listas.');
-  
-  
+  console.log('TuRutaUNAD: Sistema cargado correctamente v2.0');
 });
-
