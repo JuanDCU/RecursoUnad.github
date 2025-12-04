@@ -1,234 +1,660 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TuRutaUNAD — Guía para Estudiantes de Primera Matrícula</title>
-  <meta name="description" content="Recurso educativo digital para la orientación de nuevos estudiantes de la UNAD.">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuRutaUNAD | Inducción Profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CONFIGURACIÓN VISUAL (MODO CLARO POR DEFECTO) --- */
+        :root {
+            --unad-blue: #005883;
+            --unad-dark-blue: #003e5c;
+            --unad-yellow: #F0B429;
+            --unad-orange: #F47920;
+            --unad-green: #50B748;
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --sidebar-width: 280px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --transition: all 0.3s ease;
+        }
+
+        /* --- MODO OSCURO --- */
+        body.dark-mode {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #333;
+            --unad-blue: #4fc3f7; /* Azul más claro para contraste */
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        body.dark-mode .sidebar { background: #1a1a1a; border-right: 1px solid #333; }
+        body.dark-mode .top-bar { background: #1a1a1a; border-bottom: 1px solid #333; }
+        body.dark-mode .nav-btn:hover { background: #333; }
+        body.dark-mode .login-input, body.dark-mode select, body.dark-mode input, body.dark-mode .result-panel { 
+            background: #2d2d2d; color: white; border-color: #444; 
+        }
+        body.dark-mode .tip-box { background: #263238; color: #b2dfdb; border-left-color: var(--unad-blue); }
+
+        /* --- RESET Y BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Open Sans', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            height: 100vh; 
+            overflow: hidden; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; }
+
+        /* UTILIDADES */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.39, 0.575, 0.565, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LOGIN --- */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #005883 0%, #002333 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .login-card {
+            background: var(--bg-card); padding: 50px; border-radius: 15px; width: 90%; max-width: 450px;
+            text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            border-top: 5px solid var(--unad-yellow);
+        }
+        .login-card img { width: 180px; margin-bottom: 20px; }
+        .login-input {
+            width: 100%; padding: 15px; margin: 20px 0; border: 1px solid #ddd;
+            border-radius: 8px; font-size: 1rem; transition: var(--transition);
+            background: #f9f9f9;
+        }
+        .btn-primary {
+            background: #005883; color: white; border: none; padding: 15px;
+            width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer;
+            font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;
+            transition: var(--transition); box-shadow: 0 5px 15px rgba(0,88,131,0.3);
+        }
+        .btn-primary:hover { background: var(--unad-orange); transform: translateY(-2px); }
+
+        /* --- LAYOUT --- */
+        .app-layout { display: grid; grid-template-columns: var(--sidebar-width) 1fr; height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--bg-card); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; padding: 20px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.02); z-index: 100;
+        }
+        .brand { 
+            display: flex; align-items: center; gap: 10px; font-size: 1.2rem; 
+            font-weight: 700; color: var(--unad-blue); margin-bottom: 30px; 
+        }
+        .nav-category {
+            font-size: 0.75rem; text-transform: uppercase; color: #999;
+            margin: 20px 0 10px 10px; font-weight: 700; letter-spacing: 0.5px;
+        }
+        .nav-btn {
+            background: transparent; border: none; width: 100%; text-align: left;
+            padding: 12px 15px; margin-bottom: 5px; cursor: pointer; border-radius: 8px;
+            display: flex; align-items: center; gap: 12px; color: var(--text-secondary);
+            font-weight: 500; transition: var(--transition);
+        }
+        .nav-btn:hover { background: rgba(0,88,131,0.05); color: var(--unad-blue); }
+        .nav-btn.active { 
+            background: var(--unad-blue); color: white; 
+            box-shadow: 0 4px 10px rgba(0,88,131,0.25);
+        }
+        .nav-btn.active .material-icons { color: white; }
+
+        /* --- TOP BAR --- */
+        .main-wrapper { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .top-bar {
+            height: 70px; background: var(--bg-card); padding: 0 40px; display: flex;
+            align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .theme-toggle {
+            background: none; border: none; cursor: pointer; color: var(--text-main);
+            padding: 8px; border-radius: 50%; transition: 0.3s; margin-right: 15px;
+        }
+        .theme-toggle:hover { background: rgba(0,0,0,0.1); }
+        .greeting { font-size: 1.1rem; font-weight: 600; color: var(--unad-dark-blue); }
+        .user-badge {
+            display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.05);
+            padding: 8px 15px; border-radius: 30px;
+        }
+
+        /* --- CONTENIDO --- */
+        .content-scroll { padding: 40px; overflow-y: auto; flex: 1; }
+        .section-header { margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .section-header h2 { color: var(--unad-blue); font-size: 2rem; margin-bottom: 10px; }
+
+        /* VIDEOS */
+        .video-card {
+            background: black; border-radius: 12px; overflow: hidden;
+            box-shadow: var(--shadow); margin-bottom: 40px;
+        }
+        .video-card video { width: 100%; display: block; max-height: 500px; }
+        .video-caption { padding: 15px; background: #222; color: white; text-align: center; font-size: 0.9rem; }
+
+        /* TARJETAS INFO */
+        .info-card {
+            background: var(--bg-card); border-radius: 12px; padding: 30px; margin-bottom: 30px;
+            display: flex; gap: 30px; align-items: flex-start; box-shadow: var(--shadow);
+            transition: var(--transition); border-top: 4px solid transparent;
+        }
+        .info-card:hover { transform: translateY(-5px); border-top-color: var(--unad-yellow); }
+        .info-card.reverse { flex-direction: row-reverse; }
+        .card-visual { flex: 1; min-width: 300px; }
+        .card-visual img { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card-content { flex: 1.5; }
+        .card-content h3 { color: var(--unad-blue); font-size: 1.5rem; margin-bottom: 15px; }
+        .tip-box { background: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 4px solid var(--unad-blue); color: #0d47a1; margin-top: 15px; }
+
+        /* DASHBOARD & CHECKLIST */
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-box { 
+            background: var(--bg-card); padding: 25px; border-radius: 12px; box-shadow: var(--shadow);
+            display: flex; align-items: center; gap: 20px; border-left: 5px solid var(--unad-blue);
+        }
+        .stat-info span { font-size: 1.8rem; font-weight: 700; color: var(--text-main); }
+        
+        .checklist-panel { background: var(--bg-card); padding: 30px; border-radius: 12px; box-shadow: var(--shadow); }
+        .progress-track { height: 8px; background: #eee; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--unad-green); width: 0%; transition: width 0.8s ease; }
+        .todo-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .todo-item:hover { background: rgba(0,0,0,0.02); }
+
+        /* SIMULADOR */
+        .sim-container { background: var(--bg-card); padding: 40px; border-radius: 12px; max-width: 800px; margin: 0 auto; box-shadow: var(--shadow); }
+        .result-display { margin-top: 30px; padding: 20px; background: #fffde7; text-align: center; border: 2px dashed var(--unad-yellow); border-radius: 8px; display: none; }
+
+        /* QUIZ */
+        .quiz-option { display: block; padding: 10px; border: 1px solid var(--border-color); margin-bottom: 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .quiz-option:hover { background: rgba(0,88,131,0.05); border-color: var(--unad-blue); }
+        .quiz-option input { margin-right: 10px; }
+
+        /* RESPONSIVE */
+        .menu-btn { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-main); }
+        @media (max-width: 768px) {
+            .app-layout { grid-template-columns: 1fr; }
+            .sidebar { position: fixed; left: -100%; height: 100%; width: 280px; transition: 0.3s; }
+            .sidebar.active { left: 0; }
+            .menu-btn { display: block; }
+            .info-card, .info-card.reverse { flex-direction: column; }
+            .card-visual { width: 100%; }
+        }
+    </style>
 </head>
 <body>
-  <header class="site-header" role="banner">
-    <div class="header-inner">
-      <div class="brand">
-        <img src="Imagenes/UNAD.webp" alt="Logotipo UNAD" class="brand-logo">
-        <div>
-          <h1 class="brand-title">TuRutaUNAD</h1>
-          <p class="brand-sub">Orientación para estudiantes de primera matrícula</p>
-        </div>
-      </div>
 
-      <nav class="main-nav" role="navigation" aria-label="Navegación principal">
-        <a href="#inicio">Inicio</a>
-        <a href="#inscripciones">Matrícula</a>
-        <a href="#plataformas">Campus</a>
-        <a href="#biblioteca">Biblioteca</a>
-        <a href="#bienestar">Bienestar</a>
-        <a href="#vida">Vida U.</a>
-      </nav>
+    <div id="login-overlay">
+        <div class="login-card fade-in">
+            <img src="UNAD.webp" alt="Logo UNAD">
+            <h2 style="color: #005883; margin-bottom: 10px;">TuRutaUNAD</h2>
+            <p style="color: #666;">Plataforma de Inducción UNAD</p>
+            <form onsubmit="return false;">
+                <input type="text" class="login-input" id="username" placeholder="Ingresa tu nombre completo" required>
+                <button type="button" class="btn-primary" onclick="iniciarSesion()">Iniciar Experiencia</button>
+            </form>
+        </div>
     </div>
-  </header>
 
-  <main>
-    <section id="inicio" class="hero section">
-      <div class="hero-left">
-        <h2>Bienvenido a TuRutaUNAD</h2>
-        <p>Este recurso educativo digital ha sido diseñado para orientar sus primeros pasos en la institución: formalización de matrícula, navegación en plataformas, acceso a biblioteca y participación en bienestar integral.</p>
-        <p>La adaptación al modelo pedagógico de la UNAD requiere autonomía y manejo eficiente de las herramientas digitales. Aquí encontrará la información oficial estructurada para facilitar su ingreso a la educación superior.</p>
-        <a class="cta" href="#inscripciones">Iniciar Proceso de Matrícula</a>
-      </div>
-      <div class="hero-right">
-        <img src="Imagenes/UNAD.webp" alt="Estudiante utilizando plataformas UNAD">
-      </div>
-    </section>
-
-    <section id="inscripciones" class="section">
-      <h2>1. Inscripciones y Registro Académico</h2>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">1.1 Ruta de gestión de matrícula <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p><strong>Proceso oficial:</strong> (1) Validación de oferta académica; (2) Registro de datos básicos; (3) Cargue de documentación digital; (4) Generación y pago de recibo.</p>
-          <p>Es indispensable consultar el calendario académico vigente para respetar las fechas de inscripción. Si presenta dudas vocacionales, se recomienda acudir a la consejería académica antes de realizar el pago.</p>
-          <p>Tras la legalización, recibirá las credenciales de acceso al correo institucional y campus virtual.</p>
-          <p class="note">Nota importante: Conserve copia digital de todos los soportes (recibos y confirmaciones de sistema).</p>
-          
-          <div class="media"><img src="Imagenes/matricula_0.jpg" alt="Información sobre Matrícula CERO"></div>
-          
-          <div class="media">
-            <video class="video-media" controls poster="Videos/poster_bienvenida.jpg">
-              <source src="Videos/Bienvenida Unad.mp4" type="video/mp4">
-              Su navegador no soporta la reproducción de video.
-            </video>
-          </div>
-          <p class="small">Referencia: Reglamento Estudiantil UNAD.</p>
-        </div>
-      </article>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">1.2 Requisitos documentales <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>Los documentos estándar incluyen: Documento de identidad, acta de grado o diploma de bachiller, prueba de estado (Saber 11) y fotografía digital.</p>
-          <p>Dependiendo del programa académico, pueden requerirse anexos adicionales (ej. afiliación a sistema de salud).</p>
-          <div class="media"><img src="Imagenes/Servicios en linea.jpg" alt="Interfaz de cargue de documentos"></div>
-          <p class="small">Recomendación técnica: Utilice formato PDF y la nomenclatura <em>Apellido_Nombre_Documento.pdf</em>.</p>
-        </div>
-      </article>
-
-      <div class="section-links">
-        <strong>Recurso oficial:</strong>
-        <a href="https://estudios.unad.edu.co/inscripciones-y-matriculas" target="_blank" rel="noreferrer">Portal de Inscripciones y Matrículas</a>
-      </div>
-    </section>
-
-    <section id="plataformas" class="section">
-      <h2>2. Ecosistema Digital UNAD</h2>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">2.1 Campus Virtual y Aulas <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>El Campus Virtual centraliza el acceso a los cursos, agenda académica y evaluación. El ingreso requiere autenticación mediante credenciales institucionales.</p>
-          <p>Componentes principales:</p>
-          <ul>
-            <li><strong>Entornos de Aprendizaje:</strong> Espacios para gestión de conocimiento y evaluación.</li>
-            <li><strong>Correo Institucional:</strong> Canal formal de comunicación con el cuerpo docente.</li>
-            <li><strong>Herramientas Sincrónicas:</strong> Webconferencias y Microsoft Teams.</li>
-          </ul>
-          <div class="media"><img src="Imagenes/Captura de pantalla 2025-10-17 205913.png" alt="Vista general del Campus Virtual"></div>
-
-          <div class="media">
-            <video class="video-media" controls poster="Imagenes/placeholder_campus.jpg">
-              <source src="Videos/video-tutorial-sobre-el-proceso-de-como-acceder-al-campus-virtual-de-la-unad-ytshorts.savetube.me.mp4" type="video/mp4">
-              Video explicativo de acceso al campus.
-            </video>
-          </div>
-        </div>
-      </article>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">2.2 Sistema de Atención Integral (SAI) <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>El SAI es la mesa de ayuda oficial para reportar novedades técnicas, recuperar credenciales o solicitar soporte académico administrativo.</p>
-          <div class="media"><img src="Imagenes/Soporte tecnico Sai.png" alt="Interfaz del Sistema SAI"></div>
-        </div>
-      </article>
-
-      <div class="section-links">
-        <a href="https://campus.unad.edu.co/" target="_blank" rel="noreferrer">Ingreso al Campus</a>
-      </div>
-    </section>
-
-    <section id="biblioteca" class="section">
-      <h2>3. Gestión de Recursos Bibliográficos</h2>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">3.1 e-Biblioteca y Bases de Datos <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>La e-Biblioteca garantiza el acceso remoto a literatura científica, bases de datos especializadas y el repositorio institucional.</p>
-          <p class="note">Importante: El acceso valida su condición de estudiante activo mediante el login institucional.</p>
-          <div class="media"><img src="Imagenes/H biblioteca.png" alt="Portal de la e-Biblioteca"></div>
-          
-          <div class="media">
-             <video class="video-media" controls>
-              <source src="Videos/como-acceder-a-las-bases-de-datos-de-la-e-biblioteca-ytshorts.savetube.me.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </article>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">3.2 Normativa APA y Referenciación <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>La producción académica en la UNAD se rige por las normas APA vigentes. Se dispone de instructivos y Objetos Virtuales de Aprendizaje (OVA) para su apropiación.</p>
-          <div class="media"><img src="Imagenes/Ova 23.jpg" alt="Recurso educativo sobre normas APA"></div>
-          <p class="small">Sugerencia: Apoyarse en software como Mendeley o Zotero para la gestión de citas.</p>
-        </div>
-      </article>
-      
-      <div class="section-links">
-        <a href="https://biblioteca.unad.edu.co/" target="_blank" rel="noreferrer">Biblioteca UNAD</a>
-      </div>
-    </section>
-
-    <section id="bienestar" class="section">
-      <h2>4. Bienestar Integral Unadista</h2>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">4.1 Líneas de Acción <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>El Bienestar Institucional fomenta la formación integral a través de seis líneas de acción: Arte y Cultura, Deporte y Recreación, Promoción de la Salud, Crecimiento Personal, Emprendimiento y Medio Ambiente.</p>
-          <div class="media"><img src="Imagenes/Talleres y deportes.png" alt="Actividades de Bienestar"></div>
-        </div>
-      </article>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">4.2 Acompañamiento Psicosocial <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>Servicio de orientación y escucha activa disponible para estudiantes que requieran apoyo emocional o estrategias de afrontamiento durante su proceso formativo.</p>
-          <div class="media"><img src="Imagenes/Servivio Integral.png" alt="Canales de atención psicosocial"></div>
-        </div>
-      </article>
-
-      <div class="section-links">
-        <a href="https://visae.unad.edu.co/bienestar" target="_blank" rel="noreferrer">Sitio Web Bienestar</a>
-      </div>
-    </section>
-
-    <section id="vida" class="section">
-      <h2>5. Vida Universitaria y Redes</h2>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">5.1 Participación Estudiantil <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>La Red de Estudiantes dinamiza la interacción académica a través de semilleros de investigación, monitorías y grupos de estudio colaborativo.</p>
-          <div class="media"><img src="Imagenes/Componente-Practico.jpg" alt="Estudiantes en actividades prácticas"></div>
-        </div>
-      </article>
-
-      <article class="subsection">
-        <button class="sub-toggle" aria-expanded="false">5.2 Medios Institucionales <span class="toggle-indicator">+</span></button>
-        <div class="sub-content hidden" aria-hidden="true">
-          <p>Manténgase informado a través de TV UNAD, Radio UNAD Virtual y las redes sociales oficiales de la universidad.</p>
-          <div class="media"><img src="Imagenes/servivios en lines 2.jpg" alt="Canal TV UNAD"></div>
-        </div>
-      </article>
-    </section>
-
-    <section id="matricula-rapida" class="section">
-      <h2>Simulador de Solicitud de Matrícula</h2>
-      <form id="mat-form" class="form-card" novalidate>
-        <label for="f-nombre">Nombre completo</label>
-        <input type="text" id="f-nombre" required autocomplete="name">
+    <div id="app" class="app-layout hidden">
         
-        <label for="f-correo">Correo institucional</label>
-        <input type="email" id="f-correo" placeholder="usuario@unad.edu.co" required autocomplete="email">
-        
-        <label for="f-programa">Programa académico</label>
-        <input type="text" id="f-programa" required>
-        
-        <label for="f-semestre">Créditos a matricular (Semestre)</label>
-        <input type="number" id="f-semestre" min="1" max="21" required>
-        
-        <div class="form-actions">
-          <button type="submit" class="btn">Generar simulación</button>
-          <button type="button" id="form-reset" class="btn btn-outline">Limpiar</button>
-        </div>
-        
-        <p class="small" style="margin-top:15px;"><strong>Aviso legal:</strong> Este formulario es una herramienta pedagógica de simulación y no constituye un trámite oficial ante Registro y Control.</p>
-      </form>
-    </section>
-  </main>
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <img src="Imagenes/UNAD.webp" alt="Logo" style="width: 45px;">
+                <span class="brand-text">TuRutaUNAD</span>
+            </div>
+            
+            <nav>
+                <button class="nav-btn active" onclick="navigate('dashboard', this)">
+                    <span class="material-icons">dashboard</span> Dashboard
+                </button>
+                
+                <div class="nav-category">Módulos Académicos</div>
+                <button class="nav-btn" onclick="navigate('sec1', this)">
+                    <span class="material-icons">assignment</span> Registro y Control
+                </button>
+                <button class="nav-btn" onclick="navigate('sec2', this)">
+                    <span class="material-icons">computer</span> Campus Virtual
+                </button>
+                <button class="nav-btn" onclick="navigate('sec3', this)">
+                    <span class="material-icons">sentiment_very_satisfied</span> Bienestar Integral
+                </button>
+                <button class="nav-btn" onclick="navigate('sec4', this)">
+                    <span class="material-icons">local_library</span> Biblioteca
+                </button>
+                <button class="nav-btn" onclick="navigate('sec5', this)">
+                    <span class="material-icons">headset_mic</span> Soporte Técnico
+                </button>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="footer-inner">
-      <p>&copy; 2025 TuRutaUNAD. Aplicación Educativa Interactiva.</p>
-      <p class="small" style="color: rgba(255,255,255,0.7);">Diseñado conforme a los lineamientos de identidad visual institucional.</p>
+                <div class="nav-category">Evaluación & Herramientas</div>
+                <button class="nav-btn" onclick="navigate('quiz', this)">
+                    <span class="material-icons">quiz</span> Evaluación Final
+                </button>
+                <button class="nav-btn" onclick="navigate('simulador', this)">
+                    <span class="material-icons">calculate</span> Simulador
+                </button>
+                
+                <button class="nav-btn" onclick="cerrarSesion()" style="margin-top: 30px; color: #ff6b6b;">
+                    <span class="material-icons">logout</span> Cerrar Sesión
+                </button>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            
+            <header class="top-bar">
+                <button class="menu-btn" onclick="toggleMenu()"><span class="material-icons">menu</span></button>
+                <div style="display:flex; align-items:center;">
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar Tema">
+                        <span class="material-icons" id="theme-icon">dark_mode</span>
+                    </button>
+                    <div class="greeting" id="greeting-text">Bienvenido a la UNAD</div>
+                </div>
+                <div class="user-badge">
+                    <span class="material-icons">account_circle</span>
+                    <span id="display-name">Estudiante</span>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                
+                <section id="view-dashboard" class="fade-in">
+                    <div class="section-header">
+                        <h2>Panel Principal</h2>
+                        <p>Visión general de tu proceso de inducción unadista.</p>
+                    </div>
+
+                    <div class="video-card">
+                        <video controls poster="Imagenes/UNAD.webp">
+                            <source src="Videos/Bienvenida Unad.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-caption">Video Institucional: Modelo Pedagógico UNAD</div>
+                    </div>
+
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <span class="material-icons stat-icon">school</span>
+                            <div class="stat-info">
+                                <h4>Estado</h4>
+                                <span>Activo</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <span class="material-icons stat-icon">check_circle</span>
+                            <div class="stat-info">
+                                <h4>Progreso</h4>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checklist-panel">
+                        <h3 style="color: var(--unad-blue); margin-bottom: 10px;">Tu Ruta de Aprendizaje</h3>
+                        <div class="progress-track"><div class="progress-fill" id="main-progress-bar"></div></div>
+                        
+                        <div id="checklist-items">
+                            <label class="todo-item"><input type="checkbox" class="task-check" id="t1"> <span><strong>Módulo 1:</strong> Legalización y FUS.</span></label>
+                            <label class="todo-item"><input type="checkbox" class="task-check" id="t2"> <span><strong>Módulo 2:</strong> Acceso al Campus.</span></label>
+                            <label class="todo-item"><input type="checkbox" class="task-check" id="t3"> <span><strong>Módulo 3:</strong> Servicios de Bienestar.</span></label>
+                            <label class="todo-item"><input type="checkbox" class="task-check" id="t4"> <span><strong>Módulo 4:</strong> Uso de e-Biblioteca.</span></label>
+                            <label class="todo-item"><input type="checkbox" class="task-check" id="t5"> <span><strong>Módulo 5:</strong> Canales de Soporte.</span></label>
+                            <label class="todo-item"><input type="checkbox" class="task-check" id="t6"> <span><strong>Evaluación:</strong> Aprobar Quiz Final.</span></label>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-sec1" class="hidden fade-in">
+                    <div class="section-header"><h2>1. Registro y Control</h2></div>
+                    <div class="info-card">
+                        <div class="card-visual"><img src="Imagenes/Servicios en linea.jpg" alt="FUS"></div>
+                        <div class="card-content">
+                            <h3>FUS Digital (Trámites)</h3>
+                            <p>La UNAD pone a tu disposición el <strong>Formato Único de Solicitudes (FUS Digital)</strong>. Es la ventanilla virtual diseñada para que gestiones todos tus requerimientos académicos y administrativos sin necesidad de desplazarte a la sede física.</p>
+                            <p>A través de esta herramienta podrás solicitar certificados de notas, constancias de estudio vigentes, aplazamientos de semestre, cancelaciones de cursos por fuerza mayor, cambios de programa académico, traslado de centro y homologaciones.</p>
+                        </div>
+                    </div>
+                    <div class="info-card reverse">
+                        <div class="card-content">
+                            <h3>Legalización de Matrícula</h3>
+                            <p>Pagar el recibo es solo el inicio del proceso. Para formalizar tu vínculo como estudiante regular, es <strong>obligatorio</strong> cargar tus documentos en la plataforma de Registro y Control. Este paso habilita tu calidad de estudiante y garantiza que no tengas bloqueos futuros.</p>
+                            <div class="tip-box">
+                                <strong>Documentos Requeridos (PDF):</strong><br>
+                                1. Acta de Grado y Diploma de Bachiller.<br>
+                                2. Documento de Identidad ampliado al 150%.<br>
+                                3. Resultados Pruebas ICFES Saber 11.<br>
+                                4. Foto digital 3x4 fondo azul (para generar tu carné).
+                            </div>
+                        </div>
+                        <div class="card-visual"><img src="Imagenes/UNAD.webp" style="object-fit: contain; padding: 20px;"></div>
+                    </div>
+                </section>
+
+                <section id="view-sec2" class="hidden fade-in">
+                    <div class="section-header"><h2>2. Campus Virtual</h2></div>
+                    <div class="video-card">
+                        <video controls>
+                            <source src="Videos/video-tutorial-sobre-el-proceso-de-como-acceder-al-campus-virtual-de-la-unad-ytshorts.savetube.me.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-caption">Tutorial: Acceso Seguro al Campus</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-content">
+                            <h3>Estructura del Aula Virtual (AVA)</h3>
+                            <p>El Ambiente Virtual de Aprendizaje (AVA) es intuitivo. Al ingresar a <strong>"Mis Cursos Virtuales"</strong>, verás tus materias. Cada una está organizada pedagógicamente en 3 entornos fundamentales:</p>
+                            <ul>
+                                <li><strong>Entorno de Información Inicial:</strong> Aquí encuentras la "Agenda Semáforo" (que te avisa en verde, amarillo o rojo las fechas de entrega), el foro de noticias y la presentación del director del curso.</li>
+                                <li><strong>Entorno de Aprendizaje:</strong> Es el espacio de construcción de conocimiento. Aquí descargas el Syllabus, las guías de actividades y participas en los foros colaborativos con tus compañeros.</li>
+                                <li><strong>Entorno de Evaluación:</strong> Es el único lugar autorizado para subir tus trabajos finales y realizar los exámenes (quices) automáticos.</li>
+                            </ul>
+                        </div>
+                        <div class="card-visual"><img src="Imagenes/Captura de pantalla 2025-10-17 205913.png"></div>
+                    </div>
+                </section>
+
+                <section id="view-sec3" class="hidden fade-in">
+                    <div class="section-header"><h2>3. Bienestar Integral</h2></div>
+                    <div class="video-card">
+                        <video controls>
+                            <source src="Videos/vida-academica-unad-ytshorts.savetube.me.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-caption">Vida Académica y Nodos</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-visual"><img src="Imagenes/Talleres y deportes.png"></div>
+                        <div class="card-content">
+                            <h3>Los 6 Nodos de Bienestar</h3>
+                            <p>El bienestar unadista es transversal a tu formación académica. Puedes participar en actividades lúdicas, deportivas y culturales (presenciales en tu CEAD o virtuales) a través de los 6 nodos de acción:</p>
+                            <p>Arte y Cultura, Deporte y Recreación, Promoción de la Salud, Medio Ambiente, Crecimiento Personal y Emprendimiento Solidario.</p>
+                        </div>
+                    </div>
+                    <div class="info-card reverse">
+                        <div class="card-content">
+                            <h3>Telepsicología (Te Escuchamos)</h3>
+                            <p>La salud mental es prioridad institucional. La UNAD ofrece un servicio gratuito de primeros auxilios psicológicos y escucha activa a través de la línea "Te Escuchamos". Es un espacio confidencial disponible para estudiantes que enfrentan ansiedad, estrés académico o dificultades personales.</p>
+                        </div>
+                        <div class="card-visual"><img src="Imagenes/Telepsicología_gratis.jpg"></div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-visual"><img src="Imagenes/Servivio Integral.png"></div>
+                        <div class="card-content">
+                            <h3>Portal Laboral</h3>
+                            <p>Conectamos tu talento con el sector productivo. En el Portal Laboral encontrarás ofertas de empleo exclusivas para estudiantes y egresados, convenios de prácticas profesionales y talleres de inserción laboral.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-sec4" class="hidden fade-in">
+                    <div class="section-header"><h2>4. Recursos Académicos</h2></div>
+                    <div class="video-card">
+                        <video controls>
+                            <source src="Videos/como-acceder-a-las-bases-de-datos-de-la-e-biblioteca-ytshorts.savetube.me.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-caption">Tutorial: Uso de Bases de Datos</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-visual"><img src="Imagenes/H biblioteca.png"></div>
+                        <div class="card-content">
+                            <h3>La e-Biblioteca y Bases de Datos</h3>
+                            <p>Para garantizar la calidad académica, evita usar Wikipedia. La UNAD te brinda acceso a bases de datos científicas de alto impacto como <strong>Scopus, ScienceDirect, Redalyc y e-Libro</strong>. Aquí encontrarás artículos revisados por pares académicos.</p>
+                            <p>Además, el Repositorio Institucional alberga la producción intelectual de la universidad, incluyendo tesis y proyectos de grado de compañeros que ya se graduaron.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-sec5" class="hidden fade-in">
+                    <div class="section-header"><h2>5. Soporte y Ayuda</h2></div>
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <img src="Imagenes/servivios en lines 2.jpg" style="width: 80px; border-radius: 50%; margin-bottom: 15px;">
+                            <h3>Atención Administrativa</h3>
+                            <p>Para dudas generales, procesos de matrícula o certificaciones. Usa el <strong>Chat Virtual</strong> o el correo <strong>atencionalusuario@unad.edu.co</strong>.</p>
+                        </div>
+                        <div class="stat-box">
+                            <img src="Imagenes/Soporte tecnico Sai.png" style="width: 80px; border-radius: 5px; margin-bottom: 15px;">
+                            <h3>Soporte Técnico (SAI)</h3>
+                            <p>La Mesa de Ayuda (Sistema de Atención Integral) es exclusiva para reportar fallas tecnológicas, cursos que no aparecen o problemas con el correo institucional.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-quiz" class="hidden fade-in">
+                    <div class="section-header"><h2>Evaluación de Conocimientos</h2></div>
+                    <div class="sim-container">
+                        <form id="quiz-form">
+                            <div style="margin-bottom: 20px;">
+                                <p><strong>1. ¿Qué herramienta se usa para tramitar certificados?</strong></p>
+                                <label class="quiz-option"><input type="radio" name="q1" value="a"> Campus Virtual</label>
+                                <label class="quiz-option"><input type="radio" name="q1" value="b"> FUS Digital</label>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <p><strong>2. ¿Cuántos entornos tiene un curso en el AVA?</strong></p>
+                                <label class="quiz-option"><input type="radio" name="q2" value="a"> Cinco</label>
+                                <label class="quiz-option"><input type="radio" name="q2" value="b"> Tres</label>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <p><strong>3. ¿Dónde se encuentra la Agenda del Curso?</strong></p>
+                                <label class="quiz-option"><input type="radio" name="q3" value="a"> Información Inicial</label>
+                                <label class="quiz-option"><input type="radio" name="q3" value="b"> Aprendizaje</label>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="validarQuiz()">Enviar Respuestas</button>
+                        </form>
+                        <div id="quiz-msg" class="result-display"></div>
+                    </div>
+                </section>
+
+                <section id="view-simulador" class="hidden fade-in">
+                    <div class="section-header"><h2>Simulador de Costos</h2></div>
+                    <div class="sim-container">
+                        <form id="simulador-form">
+                            <div style="margin-bottom: 30px;">
+                                <label style="font-weight: 700; color: var(--unad-blue); display: block; margin-bottom: 10px;">
+                                    Créditos a Inscribir: <span id="creditos-val" style="color:var(--unad-orange); font-size:1.2rem;">14</span>
+                                </label>
+                                <input type="range" id="range-creditos" style="width:100%;" min="9" max="21" value="14" oninput="actualizarRango(this.value)">
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#999; margin-top:5px;">
+                                    <span>Min: 9</span>
+                                    <span>Max: 21</span>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 30px;">
+                                <label style="font-weight: 700; color: var(--unad-blue); display: block; margin-bottom: 10px;">Descuento Electoral (10%)</label>
+                                <select id="sel-descuento" class="sim-select">
+                                    <option value="0">No cuento con certificado</option>
+                                    <option value="0.10">Sí cuento con certificado</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="calcularSimulador()">CALCULAR PROYECCIÓN</button>
+                        </form>
+                        <div id="resultado-simulador" class="result-display">
+                            <h4 style="text-transform:uppercase; color:#666; letter-spacing:1px;">Valor Total Estimado</h4>
+                            <div id="total-pago" style="font-size: 2.5rem; font-weight: 800; color: var(--unad-blue); margin: 10px 0;">$0</div>
+                            <small style="color:#888;">*Incluye seguro estudiantil ($9.000). Valores referencia 2025.</small>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="app-footer">
+                    <p>© 2025 Universidad Nacional Abierta y a Distancia - UNAD</p>
+                    <p>Diseño de Sitios Web - Fase 5</p>
+                </footer>
+
+            </div>
+        </div>
     </div>
-  </footer>
 
-  <script src="script.js"></script>
+    <script>
+        // --- 1. NAVEGACIÓN ---
+        function navigate(viewId, btnElement) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById('view-' + viewId);
+            if(target) {
+                target.classList.remove('hidden');
+                document.querySelector('.content-scroll').scrollTop = 0;
+            }
+            if(btnElement) {
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+            if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('active');
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('theme-icon');
+            if(document.body.classList.contains('dark-mode')) {
+                icon.textContent = 'light_mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.textContent = 'dark_mode';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // --- 2. LOGIN / LOGOUT (FUNCIONES GLOBALES) ---
+        function iniciarSesion() {
+            const name = document.getElementById('username').value.trim();
+            if(name) {
+                localStorage.setItem('unad_user_pro', name);
+                // Ocultar Login y Mostrar App directamente
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('app').classList.remove('hidden');
+                document.getElementById('display-name').textContent = name;
+                cargarProgreso();
+            } else {
+                alert("Por favor escribe tu nombre");
+            }
+        }
+
+        function cerrarSesion() {
+            if(confirm("¿Deseas cerrar sesión?")) {
+                localStorage.removeItem('unad_user_pro');
+                location.reload();
+            }
+        }
+
+        // --- 3. SIMULADOR (LÓGICA CORREGIDA) ---
+        function actualizarRango(val) {
+            document.getElementById('creditos-val').textContent = val;
+        }
+
+        function calcularSimulador() {
+            const creds = parseInt(document.getElementById('range-creditos').value);
+            const desc = parseFloat(document.getElementById('sel-descuento').value);
+            
+            const valorCredito = 112000; 
+            const seguro = 9000;
+            
+            const total = (creds * valorCredito) * (1 - desc) + seguro;
+            
+            const fmt = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+            document.getElementById('total-pago').textContent = fmt.format(total);
+            
+            const res = document.getElementById('resultado-simulador');
+            res.style.display = 'block';
+            res.classList.add('fade-in');
+        }
+
+        // --- 4. QUIZ ---
+        function validarQuiz() {
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+            
+            let score = 0;
+            if(q1 === 'b') score++;
+            if(q2 === 'b') score++;
+            if(q3 === 'a') score++;
+
+            const msg = document.getElementById('quiz-msg');
+            msg.style.display = 'block';
+            
+            if(score === 3) {
+                msg.innerHTML = "<h3 style='color:green'>¡Excelente! Aprobado (3/3)</h3><p>Has dominado los conceptos básicos.</p>";
+                document.getElementById('t6').checked = true;
+                actualizarBarra();
+            } else {
+                msg.innerHTML = "<h3 style='color:red'>Intenta de nuevo ("+score+"/3)</h3>";
+            }
+        }
+
+        // --- 5. CHECKLIST Y PROGRESO ---
+        function cargarProgreso() {
+            const checks = document.querySelectorAll('.task-check');
+            checks.forEach(c => {
+                if(localStorage.getItem('task_' + c.id) === 'true') c.checked = true;
+                c.addEventListener('change', function() {
+                    localStorage.setItem('task_' + c.id, this.checked);
+                    actualizarBarra();
+                });
+            });
+            actualizarBarra();
+        }
+
+        function actualizarBarra() {
+            const checks = document.querySelectorAll('.task-check');
+            const total = checks.length;
+            let done = 0;
+            checks.forEach(c => { if(c.checked) done++; });
+            
+            const pct = Math.round((done / total) * 100);
+            
+            document.getElementById('main-progress-bar').style.width = pct + '%';
+            document.getElementById('progress-percent').textContent = pct + '%';
+
+            // Certificado
+            if(pct === 100 && !document.getElementById('btn-cert')) {
+                const btn = document.createElement('button');
+                btn.id = 'btn-cert';
+                btn.className = 'btn-primary';
+                btn.style.marginTop = '20px';
+                btn.style.background = '#50B748';
+                btn.innerText = '🏆 Descargar Certificado';
+                btn.onclick = () => alert('¡Felicidades! Has completado exitosamente tu inducción UNAD.');
+                document.querySelector('.checklist-panel').appendChild(btn);
+            }
+        }
+
+        // --- INICIALIZACIÓN AL CARGAR ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Verificar Tema
+            if(localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').textContent = 'light_mode';
+            }
+
+            // Verificar Login
+            const savedUser = localStorage.getItem('unad_user_pro');
+            if(savedUser) {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('app').classList.remove('hidden');
+                document.getElementById('display-name').textContent = savedUser;
+                cargarProgreso();
+            }
+
+            // Saludo
+            const h = new Date().getHours();
+            const t = h < 12 ? "Buenos días" : h < 18 ? "Buenas tardes" : "Buenas noches";
+            document.getElementById('greeting-text').textContent = t + ", Unadista";
+        });
+    </script>
 </body>
 </html>
-
 
