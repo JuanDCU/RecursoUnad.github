@@ -1,119 +1,134 @@
-// TuRutaUNAD - script.js (Consolidado)
-document.addEventListener('DOMContentLoaded', () => {
-  
-  // 1. Configuración de cabecera y variables globales
-  const siteHeader = document.querySelector('.site-header');
-  const headerHeight = siteHeader ? siteHeader.offsetHeight : 70;
-
-  // --- 2. Funcionalidad de Acordeón (Toggles) ---
-  const toggles = document.querySelectorAll('.sub-toggle');
-  
-  toggles.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const content = btn.nextElementSibling;
-      if (!content) return;
-
-      const isHidden = content.classList.contains('hidden');
-      
-      // Cerrar otros (Opcional - para comportamiento de acordeón estricto, descomentar la siguiente línea)
-      // document.querySelectorAll('.sub-content').forEach(el => el.classList.add('hidden'));
-
-      // Abrir/Cerrar el actual
-      if (isHidden) {
-        content.classList.remove('hidden');
-        btn.setAttribute('aria-expanded', 'true');
-        const ind = btn.querySelector('.toggle-indicator');
-        if(ind) ind.textContent = '−';
-      } else {
-        content.classList.add('hidden');
-        btn.setAttribute('aria-expanded', 'false');
-        const ind = btn.querySelector('.toggle-indicator');
-        if(ind) ind.textContent = '+';
-      }
-    });
-  });
-
-  // --- 3. Simulación de Formulario de Matrícula ---
-  const form = document.getElementById('mat-form');
-  
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Obtención segura de valores
-      const nombre = document.getElementById('f-nombre').value.trim();
-      const correo = document.getElementById('f-correo').value.trim();
-      const programa = document.getElementById('f-programa').value.trim();
-      const semestre = document.getElementById('f-semestre').value;
-      
-      if (!nombre || !correo || !programa || !semestre) {
-        alert('Por favor complete todos los campos obligatorios.');
-        return;
-      }
-
-      // Mensaje de simulación
-      const mensaje = `
-        -----------------------------------
-        SIMULACIÓN DE MATRÍCULA EXITOSA
-        -----------------------------------
-        Estudiante: ${nombre}
-        Programa: ${programa}
-        Créditos: ${semestre}
-        
-        Notificación enviada a: ${correo}
-        
-        *Esto es solo una simulación educativa.*
-      `;
-      
-      alert(mensaje);
-      form.reset();
+// --- FUNCIÓN DE NAVEGACIÓN GLOBAL ---
+// Está fuera del evento para ser accesible desde el HTML siempre.
+function navigate(viewId, btnElement) {
+    // 1. Ocultar todas las secciones
+    const allSections = document.querySelectorAll('section');
+    allSections.forEach(section => {
+        section.classList.add('hidden');
     });
 
-    const resetBtn = document.getElementById('form-reset');
-    if(resetBtn) resetBtn.addEventListener('click', () => form.reset());
-  }
-
-  // --- 4. Navegación Suave (Smooth Scroll) ---
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      // Solo actuar si el enlace es interno
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        e.preventDefault();
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 10;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-      }
-    });
-  });
-
-  // --- 5. Animación "Scroll Reveal" (Requisito de Impacto) ---
-  const sectionsToAnimate = document.querySelectorAll('main section');
-  
-  const checkVisibility = () => {
-    const triggerBottom = window.innerHeight * 0.85; // Punto de activación
+    // 2. Mostrar la sección seleccionada
+    const targetId = 'view-' + viewId;
+    const targetSection = document.getElementById(targetId);
     
-    sectionsToAnimate.forEach(section => {
-      const sectionTop = section.getBoundingClientRect().top;
-      
-      // Si la sección entra en el viewport
-      if (sectionTop < triggerBottom) {
-        section.classList.add('is-revealed');
-      }
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+        // Scroll arriba
+        document.querySelector('.main-content').scrollTop = 0;
+    }
+
+    // 3. Actualizar botones activos
+    if (btnElement) {
+        const allButtons = document.querySelectorAll('.nav-btn');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+
+    // 4. Cerrar menú móvil
+    const sidebar = document.getElementById('sidebar');
+    if (window.innerWidth <= 768 && sidebar) {
+        sidebar.classList.remove('active');
+    }
+}
+
+// --- LÓGICA DE LA APLICACIÓN ---
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- LOGIN ---
+    const loginOverlay = document.getElementById('login-overlay');
+    const loginForm = document.getElementById('login-form');
+    const app = document.getElementById('app');
+    const displayUser = document.getElementById('display-name');
+
+    // Verificar usuario guardado
+    const savedUser = localStorage.getItem('turuta_user');
+    if (savedUser) {
+        iniciarApp(savedUser);
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('username').value.trim();
+        if (name) {
+            localStorage.setItem('turuta_user', name);
+            iniciarApp(name);
+        }
     });
-  };
 
-  // Escuchar el evento scroll
-  window.addEventListener('scroll', checkVisibility);
-  // Chequeo inicial
-  checkVisibility();
+    function iniciarApp(name) {
+        if(displayUser) displayUser.textContent = name;
+        if(loginOverlay) {
+            loginOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loginOverlay.style.display = 'none';
+                app.classList.remove('hidden');
+            }, 500);
+        }
+        cargarProgreso();
+    }
 
-  console.log('TuRutaUNAD: Sistema cargado correctamente v2.0');
+    // --- SALIR ---
+    document.getElementById('btn-logout').addEventListener('click', () => {
+        if(confirm("¿Deseas cerrar sesión?")) {
+            localStorage.removeItem('turuta_user');
+            location.reload();
+        }
+    });
+
+    // --- MENÚ MÓVIL ---
+    const menuBtn = document.getElementById('menu-toggle');
+    const closeBtn = document.getElementById('close-sidebar');
+    const sidebar = document.getElementById('sidebar');
+
+    if(menuBtn) menuBtn.addEventListener('click', () => sidebar.classList.add('active'));
+    if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('active'));
+
+    // --- CHECKLIST ---
+    const checks = document.querySelectorAll('.task-check');
+    const bar = document.getElementById('main-progress-bar');
+    const txt = document.getElementById('progress-percent');
+
+    function cargarProgreso() {
+        checks.forEach(c => {
+            if (localStorage.getItem(c.id) === 'true') c.checked = true;
+            c.addEventListener('change', actualizarBarra);
+        });
+        actualizarBarra();
+    }
+
+    function actualizarBarra() {
+        const total = checks.length;
+        const done = Array.from(checks).filter(c => c.checked).length;
+        const pct = Math.round((done / total) * 100);
+        
+        if(bar) bar.style.width = pct + '%';
+        if(txt) txt.textContent = pct + '%';
+        
+        checks.forEach(c => localStorage.setItem(c.id, c.checked));
+    }
+
+    // --- SIMULADOR DE COSTOS ---
+    const simForm = document.getElementById('simulador-form');
+    if (simForm) {
+        const range = document.getElementById('range-creditos');
+        const display = document.getElementById('creditos-val');
+        
+        range.addEventListener('input', (e) => display.textContent = e.target.value);
+
+        simForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const creds = parseInt(range.value);
+            const desc = parseFloat(document.getElementById('sel-descuento').value);
+            const valCredito = 112000; // Valor ref 2025
+            const seguro = 9000;
+            
+            const subtotal = creds * valCredito;
+            const descuento = subtotal * desc;
+            const total = subtotal - descuento + seguro;
+            
+            const fmt = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+            document.getElementById('total-pago').textContent = fmt.format(total);
+            document.getElementById('resultado-simulador').style.display = 'block';
+        });
+    }
 });
